@@ -1,0 +1,59 @@
+import mne
+import numpy as np
+import pandas as pd
+import pickle
+import random
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import StratifiedKFold, GridSearchCV
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+
+metadata_path = "metadata_time_filtered.csv"
+metadata = pd.read_csv(metadata_path)
+metadata["sex"] = metadata["sex"].astype(str).str.strip()
+
+with open("top_epochs_per_subject.pkl", "rb") as f:
+    top_epochs_per_subject = pickle.load(f)
+
+top_ids = set(str(k).strip() for k in top_epochs_per_subject.keys())
+filtered_metadata = metadata[metadata["subject_id"].isin(top_ids)]
+grouped = metadata.groupby(['age', 'sex']).size().unstack(fill_value=0).reset_index()
+
+
+bar_width = 0.4
+ages = grouped["age"]
+x = np.arange(len(ages))
+
+plt.figure(figsize=(16, 5))
+plt.bar(x - bar_width/2, grouped["Female"], width=bar_width, label='Female', color='skyblue', edgecolor='black')
+plt.bar(x + bar_width/2, grouped["Male"], width=bar_width, label='Male', color='green', edgecolor='black')
+plt.xlabel("Age")
+plt.ylabel("Number of Subjects")
+plt.title("Number of Subjects per Age by Sex")
+plt.xticks(x, ages)
+plt.legend()
+plt.grid(axis='y')
+
+xticks = np.arange(grouped["age"].min(), grouped["age"].max()+1, 5)
+plt.xticks(ticks=xticks)
+
+plt.tight_layout()
+plt.show()
+
+metadata_path = "metadata_time_filtered.csv"
+metadata = pd.read_csv(metadata_path)
+
+metadata["subject_id"] = metadata["subject_id"].astype(str).str.strip()
+metadata["sex"] = metadata["sex"].astype(str).str.strip()
+
+with open("top_epochs_per_subject.pkl", "rb") as f:
+    top_epochs_per_subject = pickle.load(f)
+
+top_ids = set(str(k).strip() for k in top_epochs_per_subject.keys())
+filtered_metadata = metadata[metadata["subject_id"].isin(top_ids)]
+
+gender_counts = filtered_metadata["sex"].value_counts()
+
+print(gender_counts)
