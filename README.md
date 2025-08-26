@@ -13,8 +13,7 @@ Methods include spectral analysis using **Welch’s method**, classification wit
 ## Repository Structure
 
 ### Data Analysis and Feature Extraction
-- **`calculate_alpha_power.ipynb`** – Computes alpha power using Welch’s method across all channels.  
-- **`mean_alpha_power.ipynb`** – Aggregates absolute and relative alpha power across subjects, grouped by age and sex.  
+- **`calculate_alpha_power.ipynb`** – Computes absolute and relative alpha power using Welch’s method across all channels, and across subjects, grouped by age and sex.  
 - **`random_chosen_epochs_EO_age_.ipynb`** – Compares age-related alpha power trajectories using random vs. EO-only epochs.
 
 ### Connectivity Analysis
